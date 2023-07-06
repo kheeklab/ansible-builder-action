@@ -1,0 +1,20 @@
+name: 'Ansible Runner Action'
+description: 'Ansible Runner Github Action'
+branding:
+  icon: 'book-open'
+  color: 'white'
+inputs:
+  action:  # id of input
+    description: 'Ansible runner action create or build'
+    required: true
+    default: 'create'
+  args:
+    description: 'action arguments'
+    required: false
+    default: '-v 2'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.action }}
+    - ${{ inputs.args }}
