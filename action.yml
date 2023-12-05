@@ -1,20 +1,43 @@
-name: 'Ansible Runner Action'
-description: 'Ansible Runner Github Action'
+name: 'Ansible Builder Action'
+description: 'Ansible Builder Github Action'
 branding:
   icon: 'book-open'
   color: 'white'
 inputs:
-  action:  # id of input
-    description: 'Ansible runner action create or build'
+  action:
+    default: create
+    description: Ansible builder action create or build
     required: true
-    default: 'create'
+    type: string
   args:
-    description: 'action arguments'
+    default: ''
+    description: action arguments
     required: false
-    default: '-v 2'
+    type: string
+  python-version:
+    default: '3.12'
+    description: Python version
+    required: false
+    type: string
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.action }}
-    - ${{ inputs.args }}
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '${{ inputs.python-version }}'
+    - name: Create and start virtual environment
+      shell: bash
+      run: |
+        python3 -m venv builder-venv
+        source builder-venv/bin/activate
+        echo "${{ github.action_path }}" >> $GITHUB_PATH
+        pip install --upgrade pip
+    - name: Install ansible-builder
+      shell: bash
+      run: |
+        pip install setuptools ansible-builder==3.0.0
+    - name: Run ansible-builder
+      shell: bash
+      run: |
+        ansible-builder ${{ inputs.action }} ${{ inputs.args }}

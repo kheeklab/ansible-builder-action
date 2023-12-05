@@ -1,15 +1,12 @@
-# Ansible runner action
+# Ansible builder action
 
-This action run ansible-builder
+This GitHub Action does setup for Ansible Builder.
 
-## Inputs
+## Usage
 
-## `action`
+To use this action, add the following step to your workflow file:
 
-**Required** The name of the action to run. Default `"create"`.
-
-## Example usage
-
-uses: actions/ansible-builder-action@v1
-with:
-  action: 'create'
+```yaml
+- name: Setup Ansible Builder
+  uses: kheeklab/ansible-builder-action
+```
